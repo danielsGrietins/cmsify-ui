@@ -9,6 +9,18 @@ import guest from './../middleware/guest';
 
 export default {
     mode: 'history',
+    scrollBehavior(to, from, savedPosition) {
+        if (savedPosition) {
+            return savedPosition
+        }
+        if (to.hash) {
+            return {
+                selector: to.hash
+            }
+        }
+        return {x: 0, y: 0}
+
+    },
 
     linkActiveClass: 'active',
 
@@ -33,13 +45,19 @@ export default {
                 {
                     name: 'admin.dashboard',
                     path: 'dashboard',
-                    meta: { middleware: [auth] },
+                    meta: {middleware: [auth]},
                     component: Dashboard
                 },
                 {
-                    name: 'resource',
-                    path: ':resource',
-                    meta: { middleware: [auth] },
+                    name: 'admin.resource',
+                    path: ':resource', // index
+                    meta: {middleware: [auth]},
+                    component: Interface
+                },
+                {
+                    name: 'admin.resource.edit',
+                    path: ':resource/:id/edit', // edit
+                    meta: {middleware: [auth]},
                     component: Interface
                 }
             ]
