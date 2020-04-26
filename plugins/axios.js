@@ -18,10 +18,10 @@ axiosInstance.interceptors.response.use(response => {
     NProgress.done();
 
     return response
-}, (response) => {
+}, (error) => {
     NProgress.done();
 
-    return response
+    return Promise.reject(error);
 });
 
 export default axiosInstance;
