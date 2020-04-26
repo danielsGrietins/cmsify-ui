@@ -51,7 +51,7 @@
 
                 try {
                     let preparedData = this.prepareData(this.data.components);
-                    await axios({
+                    await this.$axios({
                         method: this.data.method,
                         url: this.data.url,
                         data: preparedData
