@@ -33,7 +33,6 @@
     export default {
         data() {
             return {
-                resource: this.$route.params.resource,
                 interface: {},
                 isLoading: true,
                 breadcrumbs: [
@@ -53,23 +52,36 @@
             }
         },
 
-        async created() {
-            this.interface = await this.getInterface();
+        async mounted() {
+            await this.getInterface();
         },
 
         methods: {
             async getInterface() {
                 try {
-                    let apiUri = this.resource;
-                    // let apiUri = this.resource + '/1/edit';
+                    this.isLoading = true;
+                    let apiUri = this.getApiUrl();
                     let {data} = await this.$axios.get(apiUri);
 
+                    this.interface = data;
                     this.isLoading = false;
                     return data;
                 } catch (e) {
                     this.isLoading = false;
                 }
+            },
+            getApiUrl() {
+                const route = this.$route.name;
+                if(route === 'admin.resource.edit') {
+                    return `${this.$route.params.resource}/${this.$route.params.id}/edit`;
+                }
+
+                return this.$route.params.resource;
             }
+        },
+
+        watch: {
+            '$route': 'getInterface'
         }
     }
 </script>
