@@ -1,29 +1,27 @@
 <template>
     <div>
-        <b-container fluid class="text-center">
-            <b-row class="mb-3">
-                <b-col lg="3" class="ml-auto">
-                    <b-form-group
-                        label="Filter"
-                        label-cols-sm="3"
-                        label-align-sm="right"
-                        label-size="sm"
-                        label-for="filterInput"
-                        class="mb-0"
-                    >
-                        <b-input-group size="sm">
-                            <b-form-input
-                                v-model="filter"
-                                type="search"
-                                id="filterInput"
-                                placeholder="Type to Search"
-                                debounce="500"
-                            ></b-form-input>
-                        </b-input-group>
-                    </b-form-group>
-                </b-col>
-            </b-row>
-        </b-container>
+        <b-row class="mb-3">
+            <b-col lg="3" class="ml-auto">
+                <b-form-group
+                    label="Filter"
+                    label-cols-sm="3"
+                    label-align-sm="right"
+                    label-size="sm"
+                    label-for="filterInput"
+                    class="mb-0"
+                >
+                    <b-input-group size="sm">
+                        <b-form-input
+                            v-model="filter"
+                            type="search"
+                            id="filterInput"
+                            placeholder="Type to Search"
+                            debounce="500"
+                        ></b-form-input>
+                    </b-input-group>
+                </b-form-group>
+            </b-col>
+        </b-row>
         <b-table bordered
                  show-empty
                  head-variant="dark"
@@ -37,15 +35,23 @@
                  no-local-sorting
                  responsive
                  hover>
+
+            <template v-slot:cell(actions)="data">
+                <router-link class="btn btn-sm btn-primary" :to="{ name: 'admin.resource.edit', params:{resource: 'articles',id: 1}}">Edit</router-link>
+            </template>
+
+
             <template v-slot:cell()="data" v-for="field in fields">
                 <span v-html="data.value"></span>
             </template>
+
             <template v-slot:table-busy>
                 <div class="text-center my-2">
                     <b-spinner class="align-middle"></b-spinner>
                     <strong>Loading...</strong>
                 </div>
             </template>
+
             <template v-slot:table-caption>Showing from {{ pagination.from }} to {{ pagination.to }} of {{
                 pagination.total }} entries.
             </template>
@@ -95,7 +101,7 @@
                         payload['sortDirection'] = this.sortDesc ? 'desc' : 'asc';
                     }
 
-                    if(this.filter !== '') {
+                    if (this.filter !== '') {
                         payload['filter'] = this.filter;
                     }
 
