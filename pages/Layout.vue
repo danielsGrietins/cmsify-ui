@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-navbar toggleable="lg" class="top-navbar">
-            <b-button class="mr-3" variant="dark" @click="isSidebarActive = !isSidebarActive">
+            <b-button class="mr-3" variant="dark" @click="setNavBarState">
                 <b-icon icon="layout-sidebar"></b-icon>
             </b-button>
             <b-navbar-brand href="#">Cmsify</b-navbar-brand>
@@ -14,9 +14,9 @@
                     <b-nav-item-dropdown right>
                         <!-- Using 'button-content' slot -->
                         <template v-slot:button-content>
-                            <b-avatar variant="primary" text="DG" class="mr-3"></b-avatar>
+                            <b-avatar variant="primary" :text="user.initials" class="mr-3"></b-avatar>
 
-                            Daniels Grietiņš
+                            {{ user.name }}
                         </template>
                         <b-dropdown-item href="javascript:;" @click="logout">Sign Out</b-dropdown-item>
                     </b-nav-item-dropdown>
@@ -41,46 +41,17 @@
                 <router-view></router-view>
             </main>
         </div>
-
-        <!--        <main class="d-flex">-->
-        <!--            <aside class="w-25">-->
-        <!--                <section class="mb-6">-->
-        <!--                    <h6 class="text-uppercase font-weight-bold mb-4">Main menu</h6>-->
-        <!--                    <ul class="list-unstyled">-->
-        <!--                        <li>-->
-        <!--                            <router-link :to="{ name: 'admin.dashboard' }" class="ml-2">Dashboard</router-link>-->
-        <!--                        </li>-->
-        <!--                        <li v-for="(item, index) in menuItems">-->
-        <!--                            <router-link :to="item.url" class="ml-2" exact v-text="item.name"></router-link>-->
-        <!--                        </li>-->
-        <!--                    </ul>-->
-        <!--                </section>-->
-
-        <!--                <section class="mb-6">-->
-        <!--                    <h6 class="text-uppercase font-weight-bold mb-4">Secondary menu</h6>-->
-        <!--                    <ul class="list-unstyled">-->
-        <!--                        <li>-->
-        <!--                            <router-link to="#" class="ml-2">Settings</router-link>-->
-        <!--                        </li>-->
-        <!--                        <li>-->
-        <!--                            <a href="javascript:;" class="ml-2" @click.prevent="logout">Log out</a>-->
-        <!--                        </li>-->
-        <!--                    </ul>-->
-        <!--                </section>-->
-        <!--            </aside>-->
-        <!--            <div class="col-md-12">-->
-        <!--                <router-view></router-view>-->
-        <!--            </div>-->
-        <!--        </main>-->
     </div>
 </template>
 
 <script>
     export default {
+
         data() {
             return {
                 menuItems: [],
-                isSidebarActive: false
+                isSidebarActive: this.getNavBarState(),
+                user: this.getUser()
             }
         },
 
@@ -89,6 +60,12 @@
         },
 
         methods: {
+            async getUser() {
+                if (!this.user) {
+                    await this.$store.dispatch('getUser');
+                }
+                this.user = this.$store.state.user.user;
+            },
             async getMenuItems() {
                 let {data} = await this.$axios.get('/resource-routes');
 
@@ -109,6 +86,17 @@
                 } catch (e) {
                     console.log(e);
                 }
+            },
+            getNavBarState() {
+                if(localStorage.getItem('navBarState')) {
+                    return localStorage.getItem('navBarState') === 'true';
+                }
+
+                return true;
+            },
+            setNavBarState() {
+                localStorage.setItem('navBarState', !this.isSidebarActive);
+                this.isSidebarActive = !this.isSidebarActive
             }
         }
     }

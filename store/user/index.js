@@ -10,18 +10,18 @@ export default {
         async logout({commit}) {
             commit('logout')
         },
-        async getUser({commit}, value) {
-            // console.log(1233444);
-            // const token = localStorage.getItem('token')
-            // let { data } = await this.$axios.get('profile', {
-            //     headers: {
-            //         Authorization: `Bearer ${token}`
-            //     }
-            // })
-            //
-            // sessionStorage.setItem('user', JSON.stringify(data.data))
-            // commit('updateUser', data.data)
-            // return data.data
+        async getUser({commit}) {
+            const token = localStorage.getItem('token')
+
+            const {data} = await $axios({
+                method: 'get',
+                url: 'profile',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            commit('updateUser', data)
         }
     },
     mutations: {
@@ -47,7 +47,6 @@ export default {
                 localStorage.removeItem('token');
                 localStorage.removeItem('loginTimestamp');
                 localStorage.removeItem('loginExpires');
-                localStorage.removeItem('user');
 
                 state.loggedIn = false;
                 return;
@@ -74,7 +73,6 @@ export default {
             localStorage.removeItem('token');
             localStorage.removeItem('loginTimestamp');
             localStorage.removeItem('loginExpires');
-            localStorage.removeItem('user');
         }
     }
 }

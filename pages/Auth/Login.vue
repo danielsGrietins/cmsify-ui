@@ -67,8 +67,8 @@
                     localStorage.setItem('token', data.access_token);
                     localStorage.setItem('loginTimestamp', new Date().getTime());
                     localStorage.setItem('loginExpires', data.expires_in);
-                    localStorage.setItem('user', data.user);
                     this.$store.commit('setIsLoggedIn');
+                    this.$store.commit('updateUser', data.user);
                     this.isLoading = false;
 
                     await this.$router.push({name: 'admin'});
